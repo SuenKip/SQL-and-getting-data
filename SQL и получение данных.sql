@@ -60,21 +60,6 @@ group by code
 
 --№7
 
-select oborot, count(oborot)
-from (select sum(tf.amount),
-(select
-	case
-		when (sum(tf.amount) < 50000000) then 'low'
-		when (sum(tf.amount) < 150000000) then 'middle'
-		else 'high'
-	end as oborot)
-from flights f 
-join ticket_flights tf using(flight_id)
-group by f.departure_airport, f.arrival_airport) 
-group by oborot
-
---№8
-
 select Mbileta, Mbroni, round((Mbroni / Mbileta):: numeric, 2)
 from 
 	(select percentile_cont(0.5) within group (order by tf.amount) as Mbileta,
@@ -83,7 +68,7 @@ from ticket_flights tf
 join tickets t using(ticket_no)
 join bookings b using(book_ref))
 
---№9
+--№8
 
 create extension cube
 create extension earthdistance
@@ -98,5 +83,4 @@ from (select f.departure_airport, f.arrival_airport, min(f.cena) as cena,
 	join airports a1 on f.departure_airport = a1.airport_code
 	join airports a2 on f.arrival_airport = a2.airport_code
 	group by f.departure_airport, f.arrival_airport,  a1.airport_code, a2.airport_code) f
-
 
